@@ -12,9 +12,8 @@ namespace FormsApp
 {
     public partial class LoginForm : Form
     {
-        private string validUsername = "eyanichole";
-        private string validPassword = "ayesu17";
         private int loginAttempts = 0;
+        private db dbHelper = new db(); 
 
         public LoginForm()
         {
@@ -27,7 +26,6 @@ namespace FormsApp
             if (loginAttempts > 5)
             {
                 MessageBox.Show("Too many failed login attempts. Please reset your password using the link below.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                
                 MessageBox.Show("Reset Password Link: www.example.com/resetpassword", "Reset Password Link", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Application.Exit();
                 return;
@@ -36,9 +34,8 @@ namespace FormsApp
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Text;
 
-            if (username == validUsername && password == validPassword)
+            if (dbHelper.Login(username, password)) // Checking login from MySQL database
             {
-                
                 MessageBox.Show("Login Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 StudentForm studentForm = new StudentForm();
                 this.Hide();
@@ -46,23 +43,7 @@ namespace FormsApp
             }
             else
             {
-                
-                string errorMessage = "";
-                if (username != validUsername && password != validPassword)
-                {
-                    errorMessage = "Incorrect Username and Password.";
-                }
-                else if (username != validUsername)
-                {
-                    errorMessage = "Incorrect Username.";
-                }
-                else if (password != validPassword)
-                {
-                    errorMessage = "Incorrect Password.";
-                }
-                MessageBox.Show(errorMessage + $"\nAttempt: {loginAttempts} of 5", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                
+                MessageBox.Show($"Incorrect Username or Password.\nAttempt: {loginAttempts} of 5", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 PasswordTextBox.Clear();
                 PasswordTextBox.Focus();
             }
